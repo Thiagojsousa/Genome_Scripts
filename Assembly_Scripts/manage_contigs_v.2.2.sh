@@ -1,33 +1,35 @@
 #!/bin/sh
 
+
 # Program: manage_contigs.sh
-# Description: A straightforward script for help on close gap genome process. 
-# Written by: Thiago de Jesus Sousa. Laboratory of Cellular and Molecular Genetics, Brazil.
-# Version: 2.0
+# Description: A simple script for help on close gap genome process. 
+# Written by: Thiago de Jesus Sousa. Laboratory of Cellular and Molecular Genetics, UFMG, Brazil.
+# Version: 2.2
 # Date: 05/31/2019.
 
 # Requirements:
-# I: Install programs and scripts ContiguatorF v.2.7.3, movednaa.py v.2, GenomeFinisher v.1.4, RNAmmer and Blast+ 2.9 or higher installed in usr/local/bin path.
-# II: In addition to standard requirements such as: Linux Terminal and BioPython.
+# I: Install programs and scripts ContiguatorF v.2.7.3, movednaa.py v.2, GenomeFinisher v.1.4, RNAmmer and Blast+ 2.9 installed in usr/local/bin path.
+# II: In addition to standard requirements such as: Linux Terminal and BioPython v.1.73.
 
-# Pipeline usage: You only need to change the paths of files and folders. Ex: Ctrl+H > ($key2) by (CpB1)
-# key1 - Workspace path (Ex: /home/tsousa/Cpseudo).
-# key2 - Name of the folder that will be created to organize the files (Ex: CpB1).
-# key3 - The file path of contig or scaffold (Ex: /home/tsousa/Cpseudo/montagens/spades_k121_B1).
-# key4 - The reference genome file with full path, format ".fna" (Ex: /home/tsousa/Cpseudo/referencias/genomas_fna/CP026374.1.fna).
-# key5 - The reference genome file with full path, format ".gbk" (Ex: /home/tsousa/Cpseudo/referencias/genomas_gbk/CP026374.1.gbk).
-# key6 - The first word of the reference genome file header ".fna" (Ex:Corynebacterium).
+# Pipeline usage: You only need to change the paths of files and folders on the variable box.
+# key1 - Workspace full path.
+# key2 - Name of the folder that will be created to organize the files.
+# key3 - The file path of contig or scaffold (Inside Workspace path).
+# key4 - The reference genome path, format ".fna" (Inside Workspace path).
+# key5 - The reference genome path, format ".gbk" (Inside Workspace path).
+# key6 - The first word of the reference genome file header, ".fna".
 
-set -x
+set -v
 
-key1=/home/thiagojs/UFTM-home/montagem_aeromonas/montagem/B64
-key2=AH_B66
+#Variable box:
+key1=/home/thiagojs/montagem/B64
+key2=AH_B64
 key3=B64_Scaffold_SSPACE_GapFIller/B64_gapfiller.gapfilled.final.fa
-key4=B64_Scaffold_SSPACE_GapFIller/Contiguator_MX16A/MX16A_GCF_001895965.fna
-key5=B64_Scaffold_SSPACE_GapFIller/Contiguator_MX16A/NZ_CP018201.gbk
+key4=B64_Scaffold_SSPACE_GapFIller/MX16A_GCF_001895965.fna
+key5=B64_Scaffold_SSPACE_GapFIller/NZ_CP018201.gbk
 key6=Aeromonas
 
-#1-Managing Folders and Files Generated.
+#1-Managing folders and files generated.
 echo "------------------------------------------------------------"
 echo "Creating Folders"
 cd $key1 
@@ -35,7 +37,7 @@ mkdir $key2 && cp $key1/$key3 $key2
 cd $key2 && mkdir ContiguatorF GapBlaster GenomeFinisher RNAmmer Final_files
 cd $key1/$key2/ContiguatorF && mkdir movednaa && cd movednaa && mkdir ContiguatorF_2
 
-#2-Sorting with the ContiguatorF (ContiguatorF v.2.7.3).
+#2-Sorting with the ContiguatorF.
 echo "------------------------------------------------------------"
 echo "Running the ContiguatorF"
 cd $key1/$key2/ContiguatorF
@@ -54,7 +56,7 @@ python /usr/local/bin/movednaa.py \
 $key1/$key2/ContiguatorF/Map_$key6/PseudoContig.fsa \
 $key1/$key4
 
-#4-Sorting with the ContiguatorF (ContiguatorF v2.7.3), after movednaa.py.
+#4-Sorting with the ContiguatorF, after movednaa.py.
 echo "------------------------------------------------------------"
 echo "Running ContiguatorF after movednaa.py"
 cd $key1/$key2/ContiguatorF/movednaa/ContiguatorF_2
@@ -68,7 +70,7 @@ evince $key1/$key2/ContiguatorF/movednaa/ContiguatorF_2/Map_$key6/*.pdf &
 cp $key1/$key2/ContiguatorF/movednaa/ContiguatorF_2/Map_$key6/*.fsa \
 $key1/$key2/GapBlaster
 
-#5-Gap closing with GapBlaster v.1.1.2.
+#5-Gap closing with GapBlaster.
 echo "------------------------------------------------------------"
 echo "Running GapBlaster"
 cd $key1/$key2/GapBlaster
@@ -88,13 +90,13 @@ mv *.fasta GenomeFinisher_final.fasta
 
 #7-Confirmation of the presence of rRNA clusters by RNAmmer-1.2.
 echo "------------------------------------------------------------"
-echo "Running o RNAmmer"
+echo "Running RNAmmer"
 cd $key1/$key2/RNAmmer
 
 rnammer -S bac -m lsu,ssu,tsu -xml $key2.xml -gff $key2.gff -h $key2.hmmreport \
 < $key1/$key2/Final_files/GenomeFinisher_final.fasta
 
-#8-Sorting with the ContiguatorF with the final file (ContiguatorF v.2.7.3).
+#8-Sorting with the ContiguatorF with the final file.
 echo "------------------------------------------------------------"
 echo "Running ContiguatorF"
 cd $key1/$key2/Final_files
