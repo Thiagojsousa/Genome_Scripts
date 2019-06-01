@@ -1,9 +1,10 @@
 #! /usr/bin/python26
-#     Program: moveDNAA.py
-#    Function: Recebe um arquivo fasta (scaffold) e uma referencia. Busca o gene dnaA e o move para o comeco
+# Program: moveDNAA.py
+# Function: Recebe um arquivo fasta (scaffold) e uma referencia. Busca o gene dnaA e o move para o comeco
 # Description: 
-#      Author: Diego Mariano
-#     Version: 2
+# Author: Diego Mariano
+# Version: 2
+# Shared: Thiago Sousa - Thiagojsousa@gmail.com
 
 from Bio import SeqIO
 import sys

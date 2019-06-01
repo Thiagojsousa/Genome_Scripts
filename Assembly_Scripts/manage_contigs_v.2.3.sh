@@ -1,32 +1,29 @@
-#!/bin/sh
-
+#! /bin/sh
 
 # Program: manage_contigs.sh
 # Description: A simple script for help on close gap genome process. 
 # Written by: Thiago de Jesus Sousa. Laboratory of Cellular and Molecular Genetics, UFMG, Brazil.
-# Version: 2.2
-# Date: 05/31/2019.
+# Version: 2.3
+# Date: 06/01/2019.
+# Comand line: sh manage_contigs.sh
 
 # Requirements:
 # I: Install programs and scripts ContiguatorF v.2.7.3, movednaa.py v.2, GenomeFinisher v.1.4, RNAmmer and Blast+ 2.9 installed in usr/local/bin path.
-# II: In addition to standard requirements such as: Linux Terminal and BioPython v.1.73.
-
+# II: In addition, standard requirements such as: Linux Terminal and BioPython v.1.73.
 # Pipeline usage: You only need to change the paths of files and folders on the variable box.
 # key1 - Workspace full path.
 # key2 - Name of the folder that will be created to organize the files.
-# key3 - The file path of contig or scaffold (Inside Workspace path).
-# key4 - The reference genome path, format ".fna" (Inside Workspace path).
-# key5 - The reference genome path, format ".gbk" (Inside Workspace path).
-# key6 - The first word of the reference genome file header, ".fna".
-
-set -v
+# key3 - The file path of contig or scaffold (Inside workspace path).
+# key4 - The reference genome file path, format ".fna" (Inside workspace path).
+# key5 - The reference genome file path, format ".gbk" (Inside workspace path).
+# key6 - The first word of the reference genome header, format ".fna".
 
 #Variable box:
-key1=/home/thiagojs/montagem/B64
+key1=/home/thiagojs/montagem_aeromonas/B64
 key2=AH_B64
-key3=B64_Scaffold_SSPACE_GapFIller/B64_gapfiller.gapfilled.final.fa
-key4=B64_Scaffold_SSPACE_GapFIller/MX16A_GCF_001895965.fna
-key5=B64_Scaffold_SSPACE_GapFIller/NZ_CP018201.gbk
+key3=B64_gapfiller.gapfilled.final.fa
+key4=MX16A_GCF_001895965.fna
+key5=NZ_CP018201.gbk
 key6=Aeromonas
 
 #1-Managing folders and files generated.
@@ -47,6 +44,8 @@ CONTIGuatorF.py \
 -g $key1/$key5
 
 evince $key1/$key2/ContiguatorF/Map_$key6/*.pdf &
+cp $key1/$key2/ContiguatorF/UnMappedContigs/Excluded.fsa \
+$key1/$key2/GapBlaster
 
 #3-Fixing the start of the genome from the dnaA gene, script movednaa.py v.2.
 echo "------------------------------------------------------------"
@@ -66,8 +65,7 @@ CONTIGuatorF.py \
 -g $key1/$key5
 
 evince $key1/$key2/ContiguatorF/movednaa/ContiguatorF_2/Map_$key6/*.pdf &
-
-cp $key1/$key2/ContiguatorF/movednaa/ContiguatorF_2/Map_$key6/*.fsa \
+cp $key1/$key2/ContiguatorF/movednaa/ContiguatorF_2/Map_$key6/*.fsa  \
 $key1/$key2/GapBlaster
 
 #5-Gap closing with GapBlaster.
@@ -84,7 +82,6 @@ java -jar /usr/local/bin/GenomeFinisher.jar
 
 cp $key1/$key2/GenomeFinisher/out/*.fasta \
 $key1/$key2/Final_files
- 
 cd $key1/$key2/Final_files
 mv *.fasta GenomeFinisher_final.fasta
 
